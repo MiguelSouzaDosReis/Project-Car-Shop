@@ -1,20 +1,58 @@
-/* import Controller from '.';
-import ExampleService from '../services/ExampleService';
-import { Example } from '../interfaces/ExampleInterface';
+import { Request, Response } from 'express';
+import Service from '../Services';
 
-export default class ExampleController extends Controller<Example> {
-  private $route: string;
+export type ResponseError = {
+  error: unknown;
+};
 
-  constructor(
-    service = new ExampleService(),
-    route = '/Examples',
-  ) {
-    super(service);
-    this.$route = route;
-  }
-
-  get route() { return this.$route; }
-
- > Seus métodos vão aqui <
+export interface RequestWithBody<T> extends Request {
+  body: T;
 }
- */
+
+enum ControllerErrors {
+  internal = 'Internal Server Error',
+  notFound = 'Object not found',
+  requiredId = 'Id is required',
+  badRequest = 'Bad request',
+  idHexadecimal = 'Id must have 24 hexadecimal characters',
+}
+
+abstract class Controller<T> {
+  abstract route: string;
+
+  protected errors = ControllerErrors;
+
+  constructor(protected service: Service<T>) {}
+
+  abstract create(
+    req: RequestWithBody<T>,
+    res: Response<T | ResponseError>,
+  ): Promise<typeof res>;
+
+  read = async (
+    _req: Request,
+    res: Response<T[] | ResponseError>,
+  ): Promise<typeof res> => {
+    try {
+      const objs = await this.service.read();
+      return res.json(objs);
+    } catch (err) {
+      return res.status(500).json({ error: this.errors.internal });
+    }
+  };
+
+  abstract readOne(
+    req: Request<{ id: string }>,
+    res: Response<T | ResponseError>,
+  ): Promise<typeof res>;
+
+  abstract update(
+    req: Request<{ id: string }, unknown, T>,
+    res: Response<T | ResponseError>,
+  ): Promise<typeof res>;
+  abstract delete(
+    req: Request<{ id: string }, unknown, T>,
+    res: Response<T | ResponseError>,
+  ): Promise<typeof res>;
+}
+export default Controller;
