@@ -62,19 +62,15 @@ class CarController extends Controller<Car> {
     const { body } = req;
 
     if (Object.keys(body).length === 0) {
-      res.status(400).json();
+      return res.status(400).json();
     }
 
     if (id.length < 24) {
       return res.status(400).json({ error: this.errors.idHexadecimal });
     }
-    try {
-      const car = await this.service.update(id, body);
-      if (!car) return res.status(404).json({ error: this.errors.notFound });
-      return res.status(200).json(car);
-    } catch (error) {
-      return res.status(500).json({ error: this.errors.internal });
-    }
+    const car = await this.service.update(id, body);
+    if (!car) return res.status(404).json({ error: this.errors.notFound });
+    return res.status(200).json(car);
   };
 
   delete = async (
