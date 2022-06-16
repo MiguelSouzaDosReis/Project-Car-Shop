@@ -1,5 +1,5 @@
 import { ZodError } from 'zod';
-import Model from '../Models/MongoModel';
+import Model from '../models/MongoModel';
 
 export interface ServiceError {
   error: ZodError;

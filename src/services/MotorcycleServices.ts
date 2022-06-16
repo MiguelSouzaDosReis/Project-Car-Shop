@@ -1,7 +1,7 @@
 import { MotorcycleSchema, 
   Motorcycle } from '../interfaces/MotorcycleInterface';
 import Service, { ServiceError } from '.';
-import MotorcycleModel from '../Models/MotorcycleModel';
+import MotorcycleModel from '../models/MotorcycleModel';
 
 class MotorcycleService extends Service<Motorcycle> {
   constructor(model = new MotorcycleModel()) {
