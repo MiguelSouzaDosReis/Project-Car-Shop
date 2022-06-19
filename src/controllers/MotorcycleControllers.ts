@@ -43,14 +43,10 @@ class MotorcycleController extends Controller<Motorcycle> {
     if (id.length < 24) {
       return res.status(400).json({ error: this.errors.idHexadecimal });
     }
-    try {
-      const motorcycle = await this.service.readOne(id);
-      return motorcycle
-        ? res.json(motorcycle)
-        : res.status(404).json({ error: this.errors.notFound });
-    } catch (error) {
-      return res.status(500).json({ error: this.errors.internal });
-    }
+    const motorcycle = await this.service.readOne(id);
+    return motorcycle
+      ? res.json(motorcycle)
+      : res.status(404).json({ error: this.errors.notFound });
   };
 
   update = async (
@@ -80,9 +76,6 @@ class MotorcycleController extends Controller<Motorcycle> {
     res: Response<Motorcycle | ResponseError>,
   ): Promise<typeof res> => {
     const { id } = req.params;
-    if (!id) {
-      return res.status(400).json({ error: this.errors.requiredId });
-    }
     if (id.length < 24) {
       return res.status(400).json({ error: this.errors.idHexadecimal });
     }

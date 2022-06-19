@@ -4,13 +4,21 @@ import Sinon from 'sinon';
 import CarModel from '../../../models/CarModel';
 import CarService from '../../../services/CarServices';
 
-
-describe('Service', () => {
+describe('CarService', () => {
   let carModel = new CarModel();
   let carService = new CarService(carModel);
   describe('CRUD functions working', () => {
       const carExemple = {  
         _id: '628fafea3b94a2894ec3f9e7',
+        model: 'aaa',
+        year: 1902,
+        color: 'bbb',
+        status: true,
+        buyValue: 2,
+        doorsQty: 2,
+        seatsQty: 2
+      };
+      const carExempleNoId = {  
         model: 'aaa',
         year: 1902,
         color: 'bbb',
@@ -69,7 +77,7 @@ describe('Service', () => {
       })
   
       it('retorna o carro atualizado', async () => {
-        const carUpdate = await carService.update(carExemple._id, carExemple);
+        const carUpdate = await carService.update(carExemple._id, carExempleNoId);
         expect(carUpdate).to.be.an('object')
         expect(carUpdate).to.have.property('_id')
         expect(carUpdate).to.have.property('model')
@@ -117,4 +125,3 @@ describe('Service', () => {
       });
      });
   })});
-

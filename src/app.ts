@@ -1,27 +1,37 @@
 import express, { Router } from 'express';
 import connectToDatabase from './connection';
+import tryCatchError from './middleware/tryCath';
 
 class App {
-  public app: express.Application;
+  app: express.Application;
 
   constructor() {
     this.app = express();
     this.app.use(express.json());
   }
 
-  public startServer(PORT: string | number = 3001): void {
-    connectToDatabase();
-    this.app.listen(
-      PORT,
-      () => console.log(`Server running here 👉 http://localhost:${PORT}`),
-    );
+  startServer(PORT: string | number = 3001): void {
+    try { 
+      connectToDatabase();
+      this.app.listen(
+        PORT,
+        () => console.log(`Server running here 👉 http://localhost:${PORT}`),
+      );
+    } catch (error) {
+      console.log(error);
+      this.handleError();
+    }
   }
 
-  public addRouter(router: Router) {
+  addRouter(router: Router) {
     this.app.use(router);
   }
 
-  public getApp() {
+  private handleError() {
+    this.app.use(tryCatchError);
+  }
+
+  getApp() {
     return this.app;
   }
 }
